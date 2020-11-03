@@ -1,0 +1,22 @@
+multi-tenancy:
+  tenants:
+    - id: master
+      mongo:
+        authentication-database: admin
+        database: master
+        username: root
+        password: example
+
+    - id: customer-1
+      mongo:
+        authentication-database: admin
+        database: customer1data
+        username: root
+        password: example
+
+    - id: customer-2
+      mongo:
+        authentication-database: admin
+        database: customer2data
+        username: root
+        password: example
