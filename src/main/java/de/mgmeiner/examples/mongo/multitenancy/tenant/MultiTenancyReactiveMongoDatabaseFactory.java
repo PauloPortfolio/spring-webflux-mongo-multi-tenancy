@@ -10,12 +10,13 @@ public final class MultiTenancyReactiveMongoDatabaseFactory extends SimpleReacti
     private String tenantId;
 
     public MultiTenancyReactiveMongoDatabaseFactory(
-            String tenantId,MongoClient client,String dnName) {
-        super(client,dnName);
+            String tenantId,
+            MongoClient client,
+            String databaseName) {
+
+        super(client,databaseName);
+
         this.tenantId = tenantId;
     }
 
-//    public String getTenantId() {
-//        return tenantId;
-//    }
 }

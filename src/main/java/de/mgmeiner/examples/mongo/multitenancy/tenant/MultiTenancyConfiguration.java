@@ -3,6 +3,7 @@ package de.mgmeiner.examples.mongo.multitenancy.tenant;
 
 import com.mongodb.MongoClientSettings;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mongo.MongoClientSettingsBuilderCustomizer;
 import org.springframework.boot.autoconfigure.mongo.ReactiveMongoClientFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -30,6 +31,7 @@ public class MultiTenancyConfiguration {
                         .getTenants()
                         .stream()
                         .map(t -> {
+
                             var mongoProperties = t.getMongo();
 
                             var factory =
@@ -67,7 +69,10 @@ public class MultiTenancyConfiguration {
                 tenantProperties
                         .getTenants()
                         .stream()
-                        .map(TenantProperties.Tenant::getId)
+//                        .map(TenantProperties.Tenant::getId)
+                        .map(item -> {
+                            return item.getId();
+                        })
                         .collect(Collectors.toList()));
     }
 }

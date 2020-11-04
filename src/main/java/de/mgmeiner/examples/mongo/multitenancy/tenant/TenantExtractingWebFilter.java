@@ -37,6 +37,7 @@ class TenantExtractingWebFilter implements WebFilter {
         }
 
         var tenantId = tenantIdHeader.get(0);
+
         return chain
                 .filter(exchange)
                 .subscriberContext(context -> context.put("tenant",tenantId));

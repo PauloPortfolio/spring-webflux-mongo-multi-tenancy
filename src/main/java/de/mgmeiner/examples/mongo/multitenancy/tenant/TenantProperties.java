@@ -12,6 +12,7 @@ import java.util.List;
 @Setter
 @ConfigurationProperties("multi-tenancy")
 public class TenantProperties {
+
     private List<Tenant> tenants = new ArrayList<>();
 
     @Getter
