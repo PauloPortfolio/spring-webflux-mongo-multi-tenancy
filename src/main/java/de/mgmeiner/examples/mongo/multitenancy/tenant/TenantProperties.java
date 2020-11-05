@@ -21,4 +21,8 @@ public class TenantProperties {
         private String id;
         private MongoProperties mongo;
     }
+
+    void clearTenants(){
+        tenants.clear();
+    }
 }

@@ -1,6 +1,13 @@
 multi-tenancy:
   tenants:
 
+    - id: master
+      mongo:
+        authentication-database: admin
+        database: master
+        username: admin
+        password: admin
+
     - id: customer-1
       mongo:
         authentication-database: admin

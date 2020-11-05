@@ -9,9 +9,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-/**
- * Extracts the tenant id from the X-Tenant http header and adds it to reactor's subscriber context.
- */
 @AllArgsConstructor
 class TenantExtractingWebFilter implements WebFilter {
 
