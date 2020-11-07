@@ -16,6 +16,8 @@ import org.springframework.data.mongodb.core.convert.MongoConverter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.mgmeiner.examples.mongo.multitenancy.tenant.TenantProperties.Tenant;
+
 @Configuration
 @EnableConfigurationProperties(TenantProperties.class)
 public class MultiTenancyConfiguration {
@@ -28,25 +30,27 @@ public class MultiTenancyConfiguration {
     private ObjectProvider<MongoClientSettingsBuilderCustomizer> builderCustom;
     private ObjectProvider<MongoClientSettings> setngs;
 
-    private TenantProperties newTenantProperties(String newTenant) {
+    private TenantProperties newTenantProperties(String tenant) {
 
-        MongoProperties props = new MongoProperties();
-        props.setDatabase(newTenant);
-        props.setUsername("root");
-        props.setPassword("example".toCharArray());
+        var props = new MongoProperties();
+        props.setDatabase(tenant);
+        props.setUsername("admin");
+        props.setPassword("admin".toCharArray());
         props.setAuthenticationDatabase("admin");
 
-        TenantProperties.Tenant newTenantCreated = new TenantProperties.Tenant();
-        newTenantCreated.setId(newTenant + "XXX");
-        newTenantCreated.setMongo(props);
+        Tenant newTenant = new Tenant();
+        newTenant.setId(tenant);
+        newTenant.setMongo(props);
 
-        List<TenantProperties.Tenant> newListTenants = tenantProperties.getTenants();
-        newListTenants.add(newTenantCreated);
+        List<Tenant> newTenants = tenantProperties.getTenants();
+        newTenants.add(newTenant);
 
-        tenantProperties.setTenants(newListTenants);
+        this.tenantProperties.setTenants(null);
+        this.tenantProperties.setTenants(newTenants);
 
         return tenantProperties;
     }
+
 
     public void reloadReactiveMongoTemplateWithNewTenant(String newTenant) {
 
@@ -68,22 +72,23 @@ public class MultiTenancyConfiguration {
             ObjectProvider<MongoClientSettingsBuilderCustomizer> builderCustomizers,
             ObjectProvider<MongoClientSettings> settings) {
 
+
         this.env = environment;
         this.mongoConv = mongoConverter;
         this.builderCustom = builderCustomizers;
         this.setngs = settings;
 
-        var multiTenancyReactiveMongoDatabaseFactories =
+        var mTenancyReactiveMongoDBFactories =
                 tenantProperties
                         .getTenants()
                         .stream()
-                        .map(t -> {
+                        .map(tenantItem -> {
 
-                            var mongoProperties = t.getMongo();
+                            var mongoProps = tenantItem.getMongo();
 
                             var factory =
                                     new ReactiveMongoClientFactory(
-                                            mongoProperties,
+                                            mongoProps,
                                             environment,
                                             builderCustomizers
                                                     .orderedStream()
@@ -91,23 +96,24 @@ public class MultiTenancyConfiguration {
                                                             Collectors.toList())
                                     );
 
-                            var mongoClient =
-                                    factory
-                                            .createMongoClient(settings.getIfAvailable());
+                            var newMongoClient =
+                                    factory.createMongoClient(
+                                            settings.getIfAvailable());
 
-                            System.out.println("MTCONFIG => " + t.getId());
+                            System.out.println(
+                                    "DBS => " + newMongoClient.listDatabaseNames());
 
                             return
                                     new MultiTenancyReactiveMongoDatabaseFactory(
-                                            t.getId(),
-                                            mongoClient,
-                                            mongoProperties.getDatabase()
+                                            tenantItem.getId(),
+                                            newMongoClient,
+                                            mongoProps.getDatabase()
                                     );
                         })
                         .collect(Collectors.toList());
 
         return new MultiTenancyReactiveMongoTemplate(
-                multiTenancyReactiveMongoDatabaseFactories,
+                mTenancyReactiveMongoDBFactories,
                 mongoConverter
         );
     }

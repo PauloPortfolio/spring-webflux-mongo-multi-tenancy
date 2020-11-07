@@ -8,16 +8,16 @@ multi-tenancy:
         username: admin
         password: admin
 
-    - id: customer-1
+    - id: tenant-1
       mongo:
         authentication-database: admin
-        database: customer1data
-        username: root
-        password: example
+        database: tenant1
+        username: admin
+        password: admin
 
-    - id: customer-2
+    - id: tenant-2
       mongo:
         authentication-database: admin
-        database: customer2data
-        username: root
-        password: example
+        database: tenant2
+        username: admin
+        password: admin
