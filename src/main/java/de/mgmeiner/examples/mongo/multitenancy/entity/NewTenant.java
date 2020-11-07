@@ -1,4 +1,4 @@
-package de.mgmeiner.examples.mongo.multitenancy.product;
+package de.mgmeiner.examples.mongo.multitenancy.entity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,11 +8,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
 @Setter
-@Document(collection = "products")
-public class Product {
+@Document(collection = "newtenant")
+public class NewTenant {
     @Id
     private String id;
 
     @Indexed
-    private String name;
+    private String newTenantName;
+
+    @Indexed
+    private String newTenantPassword;
 }

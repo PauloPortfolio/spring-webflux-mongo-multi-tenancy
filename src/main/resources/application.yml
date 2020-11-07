@@ -1,10 +1,10 @@
 multi-tenancy:
   tenants:
 
-    - id: master
+    - id: newtenant
       mongo:
         authentication-database: admin
-        database: master
+        database: newtenant
         username: admin
         password: admin
 
@@ -21,3 +21,4 @@ multi-tenancy:
         database: tenant2
         username: admin
         password: admin
+

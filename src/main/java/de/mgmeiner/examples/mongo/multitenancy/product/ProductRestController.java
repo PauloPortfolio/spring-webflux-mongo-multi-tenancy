@@ -1,10 +1,11 @@
 package de.mgmeiner.examples.mongo.multitenancy.product;
 
-import de.mgmeiner.examples.mongo.multitenancy.entity.TenantDTO;
-import de.mgmeiner.examples.mongo.multitenancy.tenant.MultiTenancyConfiguration;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -12,14 +13,11 @@ import reactor.core.publisher.Mono;
 @RestController
 public class ProductRestController {
 
-    private final ProductRepository repo;
-
     @Autowired
-    MultiTenancyConfiguration mTenancyConfig;
+    private final ProductRepository repo;
 
     @GetMapping("/products")
     public Flux<Product> products() {
-
         return repo.findAll()
                    .map(it -> it);
     }
@@ -27,14 +25,5 @@ public class ProductRestController {
     @PutMapping("/products")
     public Mono<Product> put(@RequestBody Product product) {
         return repo.save(product);
-    }
-
-
-    @PostMapping("/products")
-    public Mono<TenantDTO> products(@RequestBody TenantDTO tenantDTO) {
-
-        mTenancyConfig.reloadReactiveMongoTemplateWithNewTenant(tenantDTO.getNewTenant());
-
-        return Mono.just(tenantDTO);
     }
 }

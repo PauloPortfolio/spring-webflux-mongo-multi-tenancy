@@ -124,7 +124,7 @@ public class MultiTenancyConfiguration {
                 tenantProperties
                         .getTenants()
                         .stream()
-                        //                        .map(TenantProperties.Tenant::getId)
+                        //.map(TenantProperties.Tenant::getId)
                         .map(item -> {
                             return item.getId();
                         })
